@@ -2,7 +2,6 @@ import { TextField } from "@mui/material";
 import React from "react";
 
 export const TextInput = ({ label, name, value, onChange, onBlur, err }) => (
-  <div style={{ marginBottom: "1rem" }}>
     <TextField
       label={label}
       name={name}
@@ -10,9 +9,20 @@ export const TextInput = ({ label, name, value, onChange, onBlur, err }) => (
       onChange={onChange}
       onBlur={onBlur}
       variant="outlined"
-      sx={{ width: "100%" }}
+      sx={{
+        width: "100%",
+        "& .MuiInputBase-root": {
+          height: { xs: "40px", md: "85px" }, 
+        },
+        "& .MuiInputLabel-root": {
+          fontSize: { xs: "14px", md: "25px" }, 
+        },
+        "& .MuiInputBase-input": {
+          fontSize: { xs: "14px", md: "25px" }, 
+        },
+        marginBottom: {xs:2, md:3},
+      }}
       error={!!err}
       helperText={err}
     />
-  </div>
 );

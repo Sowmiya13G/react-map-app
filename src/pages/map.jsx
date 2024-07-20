@@ -166,9 +166,12 @@ const Map = () => {
     }
   };
 
+  const listStyle = {
+    fontSize: { xs: "14px", md: "25px" },
+  };
   const DrawerList = (
     <Box
-      sx={{ width: { xs: 250, md: 500 } }}
+      sx={{ width: { xs: 250, md: 700 } }}
       role="presentation"
       onClick={() => setOpenDrawer(false)}
     >
@@ -177,6 +180,7 @@ const Map = () => {
           <>
             <ListItem>
               <ListItemText
+                sx={listStyle}
                 primary={`Company Name: ${selectedPlace.data.details.companyName}`}
               />
             </ListItem>
@@ -246,7 +250,7 @@ const Map = () => {
     <Box
       sx={{
         position: "relative",
-        height: { xs: 750, md: 1050 },
+        height: { xs: 650, md: 1330 },
         width: "calc(100vw - 40px)",
         margin: 2,
       }}
@@ -281,6 +285,7 @@ const Map = () => {
             padding: 2,
             width: { xs: "100%", md: "18%" },
             fontWeight: "bold",
+            fontSize: { xs: "14px", md: "25px" },
           }}
           variant="contained"
           onClick={() => setOpen(true)}
@@ -292,8 +297,11 @@ const Map = () => {
       <MapContainer
         ref={mapRef}
         center={position}
-        zoom={10}
-        style={{ height: "100%", width: "100%" }}
+        zoom={18}
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {places.map((place) => (
@@ -318,11 +326,15 @@ const Map = () => {
 
       <Button
         variant="contained"
-        sx={{ position: "absolute", bottom: 16, right: 16 }}
+        sx={{
+          position: "absolute",
+          top: { xs: "26%", md: "8%" },
+          right: 16,
+          zIndex: 1000,
+        }}
         onClick={handleLocateMe}
-        startIcon={<MyLocationIcon />}
       >
-        Locate Me
+        <MyLocationIcon />
       </Button>
 
       <AddPlaceModal
