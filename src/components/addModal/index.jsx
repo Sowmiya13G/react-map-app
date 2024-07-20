@@ -1,25 +1,43 @@
+import React from "react";
+
+// MUI imports
 import CancelIcon from "@mui/icons-material/Cancel";
-import { Box, Button, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Modal,
+  Typography,
+} from "@mui/material";
+
+// other packages
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// firebase
 import {
   addDoc,
   collection,
   doc,
-  onSnapshot,
-  updateDoc,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
+import { db } from "../../firebase-config";
+
+// leaf let
 import L from "leaflet";
 import "leaflet-curve";
 import "leaflet/dist/leaflet.css";
-import React from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import pin from "../../assets/location-pin.png";
-import { db } from "../../firebase-config";
+
+// components
 import { TextInput } from "../textInput";
 
+// assets
+import pin from "../../assets/location-pin.png";
+
+// initial state
 const initialState = {
   companyName: "",
   address: "",
@@ -29,6 +47,7 @@ const initialState = {
   country: "",
 };
 
+// styles
 const style = {
   position: "absolute",
   top: "50%",
@@ -55,27 +74,32 @@ const inputBoxStyle = {
   paddingTop: { xs: 1, md: 3 },
 };
 
+// custom icon
+const customIcon = L.icon({
+  iconUrl: pin,
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40],
+});
+
 const AddPlaceModal = ({
   open,
   onClose,
-  onUpdate,
   placeDetails,
   apiKey,
   fetchPlaces,
 }) => {
+  // local states
   const [details, setDetails] = React.useState(initialState);
   const [clickedPosition, setClickedPosition] = React.useState([0, 0]);
   const [err, setErr] = React.useState(initialState);
   const [locationDetails, setLocationDetails] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
 
+  // use ref
   const mapRef = React.useRef();
-  const customIcon = L.icon({
-    iconUrl: pin,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40],
-  });
 
+  // use effects
   React.useEffect(() => {
     if (placeDetails) {
       setDetails(placeDetails.details);
@@ -86,6 +110,7 @@ const AddPlaceModal = ({
     }
   }, [placeDetails, open]);
 
+  // ------------------------------ Functionalities ------------------------------------
   const handleCloseModal = () => {
     setDetails(initialState);
     setErr(initialState);
@@ -101,6 +126,7 @@ const AddPlaceModal = ({
     return null;
   };
 
+  // add place
   const handleAddPlace = async () => {
     const newErr = {
       companyName: details.companyName ? "" : "Company name is required",
@@ -117,7 +143,7 @@ const AddPlaceModal = ({
     if (hasErrors) {
       return;
     }
-
+    setLoading(true);
     try {
       const address = `${details.address}, ${details.city}, ${details.state}, ${details.country}`;
       const response = await axios.get(
@@ -148,9 +174,12 @@ const AddPlaceModal = ({
     } catch (error) {
       console.error("Error adding place to Firestore:", error);
       toast.error("Error adding place to Firestore");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // save changes
   const handleSave = async () => {
     const newErr = {
       companyName: details.companyName ? "" : "Company name is required",
@@ -160,26 +189,26 @@ const AddPlaceModal = ({
       state: details.state ? "" : "State is required",
       country: details.country ? "" : "Country is required",
     };
-  
+
     setErr(newErr);
-  
+
     const hasErrors = Object.values(newErr).some((error) => error !== "");
     if (hasErrors) {
       return;
     }
-  
+    setLoading(true);
     try {
       const newPosition = clickedPosition;
-  
+
       const querySnapshot = await getDocs(collection(db, "places"));
       let docId = null;
-  
+
       querySnapshot.forEach((doc) => {
         if (doc.data().details.companyName === details.companyName) {
           docId = doc.id;
         }
       });
-  
+
       if (docId) {
         await updateDoc(doc(db, "places", docId), {
           details: {
@@ -192,7 +221,7 @@ const AddPlaceModal = ({
           },
           position: newPosition,
         });
-  
+
         toast.success("Client Updated");
         handleCloseModal();
         fetchPlaces();
@@ -202,50 +231,12 @@ const AddPlaceModal = ({
     } catch (error) {
       console.error("Error updating place in Firestore:", error);
       toast.error("Error updating place in Firestore");
+    } finally {
+      setLoading(false);
     }
   };
-  
-  // const handleSave = async () => {
-  //   const newErr = {
-  //     companyName: details.companyName ? "" : "Company name is required",
-  //     address: details.address ? "" : "Address is required",
-  //     city: details.city ? "" : "City is required",
-  //     pincode: details.pincode ? "" : "Pincode is required",
-  //     state: details.state ? "" : "State is required",
-  //     country: details.country ? "" : "Country is required",
-  //   };
 
-  //   setErr(newErr);
-
-  //   const hasErrors = Object.values(newErr).some((error) => error !== "");
-  //   if (hasErrors) {
-  //     return;
-  //   }
-
-  //   try {
-  //     const newPosition = clickedPosition;
-
-  //     await addDoc(collection(db, "places"), {
-  //       details: {
-  //         companyName: details?.companyName,
-  //         address: details?.address,
-  //         city: details?.city,
-  //         pincode: details?.pincode,
-  //         state: details?.state,
-  //         country: details?.country,
-  //       },
-  //       position: newPosition,
-  //     });
-
-  //     toast.success("Client Updated");
-  //     handleCloseModal();
-  //     fetchPlaces();
-  //   } catch (error) {
-  //     console.error("Error updating place to Firestore:", error);
-  //     toast.error("Error updating place to Firestore");
-  //   }
-  // };
-
+  // fetch details while
   const handleClick = async (event) => {
     const { latlng } = event;
     const { lat, lng } = latlng;
@@ -435,8 +426,15 @@ const AddPlaceModal = ({
           }}
           variant="contained"
           onClick={placeDetails ? handleSave : handleAddPlace}
+          disabled={loading}
         >
-          {placeDetails ? "Save Changes" : " Add Client"}
+          {loading ? (
+            <CircularProgress size={24} />
+          ) : placeDetails ? (
+            "Save Changes"
+          ) : (
+            "Add Client"
+          )}
         </Button>
       </Box>
     </Modal>

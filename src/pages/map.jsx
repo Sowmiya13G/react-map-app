@@ -1,3 +1,6 @@
+import React from "react";
+
+// MUI imports
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import { Box, Button, TextField } from "@mui/material";
 import Divider from "@mui/material/Divider";
@@ -5,7 +8,13 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+
+// other packages
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+//firebase
 import {
   collection,
   deleteDoc,
@@ -13,19 +22,24 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import { db } from "../firebase-config";
+
+//leaflet
 import L from "leaflet";
 import "leaflet-curve";
 import "leaflet/dist/leaflet.css";
-import React from "react";
 import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import pin from "../assets/location-pin.png";
-import AddPlaceModal from "../components/addModal";
-import { db } from "../firebase-config";
 
+// components
+import AddPlaceModal from "../components/addModal";
+
+// assets
+import pin from "../assets/location-pin.png";
+
+// map key
 const apiKey = "37b4cf9407c146caa22bf64efcc6ed65";
 
+// custom icon
 const customIcon = L.icon({
   iconUrl: pin,
   iconSize: [40, 40],
@@ -33,11 +47,12 @@ const customIcon = L.icon({
   popupAnchor: [0, -40],
 });
 
+// sample position
+const samplePosition = [42.188779600000004, -71.45369788783867];
+
 const Map = () => {
-  const mapRef = React.useRef();
-  const [position, setPosition] = React.useState([
-    42.188779600000004, -71.45369788783867,
-  ]);
+  // local states
+  const [position, setPosition] = React.useState(samplePosition);
   const [locationDetails, setLocationDetails] = React.useState(null);
   const [searchText, setSearchText] = React.useState("");
   const [open, setOpen] = React.useState(false);
@@ -45,11 +60,19 @@ const Map = () => {
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [selectedPlace, setSelectedPlace] = React.useState(null);
   const [placeDetails, setPlaceDetails] = React.useState(null);
+
+  // use ref
+  const mapRef = React.useRef();
+
+  // use effects
   React.useEffect(() => {
     fetchLocationDetails(position[0], position[1]);
     fetchPlaces();
   }, [position]);
 
+  // ------------------------------ functionalities -----------------------------------------
+
+  // fetch local details from map
   const fetchLocationDetails = async (lat, lng) => {
     try {
       const response = await axios.get(
@@ -65,6 +88,7 @@ const Map = () => {
     }
   };
 
+  // fetch places from firebase fire store
   const fetchPlaces = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "places"));
@@ -78,6 +102,7 @@ const Map = () => {
     }
   };
 
+  // fetch current location
   const handleLocateMe = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -96,6 +121,7 @@ const Map = () => {
     }
   };
 
+  // search
   const handleSearch = async () => {
     if (searchText.trim() === "") return;
 
@@ -116,6 +142,7 @@ const Map = () => {
     }
   };
 
+  // delete added place
   const handleDelete = async () => {
     if (!selectedPlace) {
       toast.error("No place selected");
@@ -133,6 +160,7 @@ const Map = () => {
     }
   };
 
+  // handle edit
   const handleEdit = () => {
     if (!selectedPlace) {
       toast.error("No place selected");
@@ -152,6 +180,7 @@ const Map = () => {
     setPlaceDetails(selectedPlace.data);
   };
 
+  // update place details
   const handleUpdatePlace = async (updatedPlace) => {
     if (!selectedPlace) return;
 
@@ -166,9 +195,101 @@ const Map = () => {
     }
   };
 
+  // ------------------- Custom Styles -----------------------
   const listStyle = {
     fontSize: { xs: "14px", md: "25px" },
   };
+
+  // --------------------- Render UI ----------------------------------
+
+  // render search and button
+
+  const header = () => {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 2,
+        }}
+      >
+        <TextField
+          label="Search location"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          variant="outlined"
+          sx={{
+            width: { xs: "100%", md: "80%" },
+            marginBottom: { xs: 2, md: 0 },
+            "& .MuiInputBase-root": {
+              height: { xs: "40px", md: "75px" },
+            },
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "14px", md: "25px" },
+            },
+            "& .MuiInputBase-input": {
+              fontSize: { xs: "14px", md: "25px" },
+            },
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
+        />
+        <Button
+          sx={{
+            color: "#fff",
+            backgroundColor: "#0F67B1",
+            padding: 2,
+            width: { xs: "100%", md: "18%" },
+            fontWeight: "bold",
+            fontSize: { xs: "14px", md: "25px" },
+          }}
+          variant="contained"
+          onClick={() => setOpen(true)}
+        >
+          ADD NEW CLIENT
+        </Button>
+      </Box>
+    );
+  };
+
+  const mapContainer = () => {
+    return (
+      <MapContainer
+        ref={mapRef}
+        center={position}
+        zoom={18}
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {places.map((place) => (
+          <Marker
+            key={place.id}
+            position={place.data.position}
+            icon={customIcon}
+            eventHandlers={{
+              click: () => {
+                setSelectedPlace(place);
+                setOpenDrawer(true);
+              },
+            }}
+          >
+            <Tooltip direction="top" offset={[0, -35]} opacity={1} permanent>
+              {place.data.details.companyName}
+            </Tooltip>
+          </Marker>
+        ))}
+        <Marker position={position} icon={customIcon} />
+      </MapContainer>
+    );
+  };
+
   const DrawerList = (
     <Box
       sx={{ width: { xs: 250, md: 700 } }}
@@ -250,85 +371,19 @@ const Map = () => {
     <Box
       sx={{
         position: "relative",
-        height: { xs: 650, md: 1330 },
+        height: { xs: "80vh", md: "90vh" },
         width: "calc(100vw - 40px)",
         margin: 2,
       }}
     >
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 2,
-        }}
-      >
-        <TextField
-          label="Search location"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          variant="outlined"
-          sx={{
-            width: { xs: "100%", md: "80%" },
-            marginBottom: { xs: 2, md: 0 },
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch();
-          }}
-        />
-        <Button
-          sx={{
-            color: "#fff",
-            backgroundColor: "#0F67B1",
-            padding: 2,
-            width: { xs: "100%", md: "18%" },
-            fontWeight: "bold",
-            fontSize: { xs: "14px", md: "25px" },
-          }}
-          variant="contained"
-          onClick={() => setOpen(true)}
-        >
-          ADD NEW CLIENT
-        </Button>
-      </Box>
-
-      <MapContainer
-        ref={mapRef}
-        center={position}
-        zoom={18}
-        style={{
-          height: "100%",
-          width: "100%",
-        }}
-      >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        {places.map((place) => (
-          <Marker
-            key={place.id}
-            position={place.data.position}
-            icon={customIcon}
-            eventHandlers={{
-              click: () => {
-                setSelectedPlace(place);
-                setOpenDrawer(true);
-              },
-            }}
-          >
-            <Tooltip direction="top" offset={[0, -35]} opacity={1} permanent>
-              {place.data.details.companyName}
-            </Tooltip>
-          </Marker>
-        ))}
-        <Marker position={position} icon={customIcon} />
-      </MapContainer>
+      {header()}
+      {mapContainer()}
 
       <Button
         variant="contained"
         sx={{
           position: "absolute",
-          top: { xs: "26%", md: "8%" },
+          top: { xs: "23%", md: "8%" },
           right: 16,
           zIndex: 1000,
         }}
