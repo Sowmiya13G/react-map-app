@@ -33,7 +33,6 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 // components
 import { TextInput } from "../textInput";
-import Input from "../input";
 // assets
 import pin from "../../assets/location-pin.png";
 
