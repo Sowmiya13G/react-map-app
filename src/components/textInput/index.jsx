@@ -12,7 +12,7 @@ export const TextInput = ({ label, name, value, onChange, onBlur, err }) => (
     sx={{
       width: "100%",
       "& .MuiInputBase-root": {
-        height: { xs: "40px", md: "45px" },
+        height: { xs: "50px", md: "55px" },
       },
       "& .MuiInputLabel-root": {
         fontSize: { xs: "14px", md: "18px" },

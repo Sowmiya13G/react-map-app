@@ -48,7 +48,7 @@ const customIcon = L.icon({
 });
 
 // sample position
-const samplePosition = [42.188779600000004, -71.45369788783867];
+const samplePosition = [21.642491280846862, 78.83925616878989];
 
 const Map = () => {
   // local states
@@ -278,7 +278,7 @@ const Map = () => {
       <MapContainer
         ref={mapRef}
         center={position}
-        zoom={18}
+        zoom={10}
         style={{
           height: "100%",
           width: "100%",

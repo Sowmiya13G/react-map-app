@@ -80,6 +80,9 @@ const customIcon = L.icon({
   popupAnchor: [0, -40],
 });
 
+// sample position
+const samplePosition = [21.642491280846862, 78.83925616878989];
+
 const AddPlaceModal = ({
   open,
   onClose,
@@ -89,7 +92,7 @@ const AddPlaceModal = ({
 }) => {
   // local states
   const [details, setDetails] = React.useState(initialState);
-  const [clickedPosition, setClickedPosition] = React.useState([0, 0]);
+  const [clickedPosition, setClickedPosition] = React.useState(samplePosition);
   const [err, setErr] = React.useState(initialState);
   const [locationDetails, setLocationDetails] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
@@ -238,6 +241,7 @@ const AddPlaceModal = ({
   const handleClick = async (event) => {
     const { latlng } = event;
     const { lat, lng } = latlng;
+    console.log(latlng);
     try {
       const response = await axios.get(
         `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${apiKey}`
@@ -292,38 +296,39 @@ const AddPlaceModal = ({
             fontSize: { xs: 25, md: 30 },
           }}
         />
-        <Box
-          sx={{
-            height: { xs: "45%", md: "45%"},
-            width: "100%",
-            marginY: { xs: 1, md: 2 },
-          }}
-        >
-          <MapContainer
-            center={clickedPosition}
-            zoom={15}
-            style={{ height: "100%", width: "100%" }}
-            ref={mapRef}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={clickedPosition} icon={customIcon} />
-            <ClickHandler onClick={handleClick} />
-          </MapContainer>
-        </Box>
-        <Typography
-          id="modal-title"
-          variant="h6"
-          component="h2"
-          sx={{
-            marginTop: { xs: 1, md: 2 },
-            marginBottom: { xs: 1, md: 2 },
-            fontSize: { xs: "18px", md: "20px" },
-            fontWeight: "bold",
-          }}
-        >
-          {placeDetails ? "Edit Place" : "Add New Place"}
-        </Typography>
+
         <Box sx={inputBoxStyle}>
+          <Box
+            sx={{
+              height: { xs: "45%", md: "45%" },
+              width: "100%",
+              marginY: { xs: 1, md: 2 },
+            }}
+          >
+            <MapContainer
+              center={clickedPosition}
+              zoom={5}
+              style={{ height: "100%", width: "100%" }}
+              ref={mapRef}
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <Marker position={clickedPosition} icon={customIcon} />
+              <ClickHandler onClick={handleClick} />
+            </MapContainer>
+          </Box>
+          <Typography
+            id="modal-title"
+            variant="h6"
+            component="h2"
+            sx={{
+              marginTop: { xs: 1, md: 2 },
+              marginBottom: { xs: 1, md: 2 },
+              fontSize: { xs: "18px", md: "20px" },
+              fontWeight: "bold",
+            }}
+          >
+            {placeDetails ? "Edit Place" : "Add New Place"}
+          </Typography>
           <TextInput
             label="Company Name"
             name="companyName"
@@ -418,7 +423,7 @@ const AddPlaceModal = ({
             padding: { xs: 2, md: 1 },
             mt: { xs: 1, md: 3 },
             width: "100%",
-            height: { xs: "3%", md: "6%" },
+            height: { xs: "45px", md: "50px" },
             fontSize: { xs: "13px", md: "15px" },
             fontWeight: "bold",
           }}
