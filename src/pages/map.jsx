@@ -2,7 +2,7 @@ import React from "react";
 
 // MUI imports
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -199,6 +199,23 @@ const Map = () => {
   const listStyle = {
     fontSize: { xs: "14px", md: "25px" },
   };
+  const boldStyle = {
+    fontWeight: "bold",
+  };
+
+  const semiBoldStyle = {
+    fontWeight: 600,
+  };
+
+  const buttonContainer = {
+    display: "flex",
+    flexDirection: { xs: "column", md: "row" },
+    padding: 3,
+    alignItems: { md: "center" },
+    width: "90%",
+    justifyContent: { md: "space-between" },
+    marginRight: { xs: "2%" },
+  };
 
   // --------------------- Render UI ----------------------------------
 
@@ -225,13 +242,13 @@ const Map = () => {
             width: { xs: "100%", md: "80%" },
             marginBottom: { xs: 2, md: 0 },
             "& .MuiInputBase-root": {
-              height: { xs: "40px", md: "75px" },
+              height: "40px",
             },
             "& .MuiInputLabel-root": {
-              fontSize: { xs: "14px", md: "25px" },
+              fontSize: "14px",
             },
             "& .MuiInputBase-input": {
-              fontSize: { xs: "14px", md: "25px" },
+              fontSize: "14px",
             },
           }}
           onKeyDown={(e) => {
@@ -242,10 +259,10 @@ const Map = () => {
           sx={{
             color: "#fff",
             backgroundColor: "#0F67B1",
-            padding: 2,
+            padding: 1,
             width: { xs: "100%", md: "18%" },
             fontWeight: "bold",
-            fontSize: { xs: "14px", md: "25px" },
+            fontSize: { xs: "14px" },
           }}
           variant="contained"
           onClick={() => setOpen(true)}
@@ -302,49 +319,88 @@ const Map = () => {
             <ListItem>
               <ListItemText
                 sx={listStyle}
-                primary={`Company Name: ${selectedPlace.data.details.companyName}`}
+                primary={
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {`Company Name: ${selectedPlace.data.details.companyName}`}
+                  </Typography>
+                }
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary={`Address: ${selectedPlace.data.details.address}`}
+                primary={
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {`Address: ${selectedPlace.data.details.address}`}
+                  </Typography>
+                }
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary={`City: ${selectedPlace.data.details.city}`}
+                primary={
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {`City: ${selectedPlace.data.details.city}`}
+                  </Typography>
+                }
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary={`Pincode: ${selectedPlace.data.details.pincode}`}
+                primary={
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {`Pincode: ${selectedPlace.data.details.pincode}`}
+                  </Typography>
+                }
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary={`State: ${selectedPlace.data.details.state}`}
+                primary={
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {`State: ${selectedPlace.data.details.state}`}
+                  </Typography>
+                }
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary={`Country: ${selectedPlace.data.details.country}`}
+                primary={
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {`Country: ${selectedPlace.data.details.country}`}
+                  </Typography>
+                }
               />
             </ListItem>
 
             <Divider />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                padding: 3,
-                alignItems: { md: "center" },
-                width: "90%",
-                justifyContent: { md: "space-between" },
-              }}
-            >
+            <Box sx={buttonContainer}>
               <Button
                 variant="contained"
-                sx={{ width: { md: "45%" } }}
+                sx={{ width: { md: "45%", xs: "85%" } }}
                 onClick={handleDelete}
               >
                 DELETE
@@ -352,7 +408,10 @@ const Map = () => {
               <Button
                 variant="contained"
                 onClick={handleEdit}
-                sx={{ marginTop: { xs: 3, md: 0 }, width: { md: "45%" } }}
+                sx={{
+                  marginTop: { xs: 3, md: 0 },
+                  width: { md: "45%", xs: "85%" },
+                }}
               >
                 EDIT
               </Button>
@@ -371,7 +430,7 @@ const Map = () => {
     <Box
       sx={{
         position: "relative",
-        height: { xs: "80vh", md: "90vh" },
+        height: { xs: "80vh", md: "86vh" },
         width: "calc(100vw - 40px)",
         margin: 2,
       }}
@@ -383,7 +442,7 @@ const Map = () => {
         variant="contained"
         sx={{
           position: "absolute",
-          top: { xs: "23%", md: "8%" },
+          top: { xs: "20%", md: "13%" },
           right: 16,
           zIndex: 1000,
         }}

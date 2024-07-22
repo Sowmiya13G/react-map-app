@@ -33,7 +33,7 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 // components
 import { TextInput } from "../textInput";
-
+import Input from "../input";
 // assets
 import pin from "../../assets/location-pin.png";
 
@@ -53,12 +53,12 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: { xs: 300, md: 850 },
+  width: { xs: "70vw", md: "33vw" },
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 3,
+  p: { xs: 2, md: 3 },
   borderRadius: 5,
-  height: { xs: "80%", md: "80%" },
+  height: { xs: "80vh", md: "80vh" },
   display: "flex",
   flexDirection: "column",
 };
@@ -71,7 +71,6 @@ const inputBoxStyle = {
   },
   scrollbarWidth: "none",
   scrollbarColor: "transparent transparent",
-  paddingTop: { xs: 1, md: 3 },
 };
 
 // custom icon
@@ -291,12 +290,12 @@ const AddPlaceModal = ({
             display: "flex",
             alignSelf: "flex-end",
             margin: 1,
-            fontSize: { xs: 30, md: 50 },
+            fontSize: { xs: 25, md: 30 },
           }}
         />
         <Box
           sx={{
-            height: { xs: "250px", md: "500px" },
+            height: { xs: "45%", md: "45%"},
             width: "100%",
             marginY: { xs: 1, md: 2 },
           }}
@@ -319,7 +318,7 @@ const AddPlaceModal = ({
           sx={{
             marginTop: { xs: 1, md: 2 },
             marginBottom: { xs: 1, md: 2 },
-            fontSize: { xs: "18px", md: "30px" },
+            fontSize: { xs: "18px", md: "20px" },
             fontWeight: "bold",
           }}
         >
@@ -417,11 +416,11 @@ const AddPlaceModal = ({
           sx={{
             color: "#fff",
             backgroundColor: "#0F67B1",
-            padding: 2,
+            padding: { xs: 2, md: 1 },
             mt: { xs: 1, md: 3 },
             width: "100%",
-            height: { xs: 25, md: 75 },
-            fontSize: { xs: "13px", md: "25px" },
+            height: { xs: "3%", md: "6%" },
+            fontSize: { xs: "13px", md: "15px" },
             fontWeight: "bold",
           }}
           variant="contained"
