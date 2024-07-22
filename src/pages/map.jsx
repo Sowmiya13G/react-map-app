@@ -229,11 +229,11 @@ const Map = () => {
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           marginBottom: 2,
         }}
       >
-        <TextField
+        {/* <TextField
           label="Search location"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -254,7 +254,7 @@ const Map = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch();
           }}
-        />
+        /> */}
         <Button
           sx={{
             color: "#fff",
@@ -263,6 +263,7 @@ const Map = () => {
             width: { xs: "100%", md: "18%" },
             fontWeight: "bold",
             fontSize: { xs: "14px" },
+            alignSelf:"end"
           }}
           variant="contained"
           onClick={() => setOpen(true)}
@@ -309,7 +310,7 @@ const Map = () => {
 
   const DrawerList = (
     <Box
-      sx={{ width: { xs: 250, md: 700 } }}
+      sx={{ width: { xs: 250, md: 650 } }}
       role="presentation"
       onClick={() => setOpenDrawer(false)}
     >
@@ -323,7 +324,10 @@ const Map = () => {
                   <Typography
                     variant="body1"
                     component="div"
-                    sx={{ fontWeight: 600 }}
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: { xs: "18px", md: "20px" },
+                    }}
                   >
                     {`Company Name: ${selectedPlace.data.details.companyName}`}
                   </Typography>
@@ -336,7 +340,10 @@ const Map = () => {
                   <Typography
                     variant="body1"
                     component="div"
-                    sx={{ fontWeight: 600 }}
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: { xs: "18px", md: "20px" },
+                    }}
                   >
                     {`Address: ${selectedPlace.data.details.address}`}
                   </Typography>
@@ -349,7 +356,10 @@ const Map = () => {
                   <Typography
                     variant="body1"
                     component="div"
-                    sx={{ fontWeight: 600 }}
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: { xs: "18px", md: "20px" },
+                    }}
                   >
                     {`City: ${selectedPlace.data.details.city}`}
                   </Typography>
@@ -362,7 +372,10 @@ const Map = () => {
                   <Typography
                     variant="body1"
                     component="div"
-                    sx={{ fontWeight: 600 }}
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: { xs: "18px", md: "20px" },
+                    }}
                   >
                     {`Pincode: ${selectedPlace.data.details.pincode}`}
                   </Typography>
@@ -375,7 +388,10 @@ const Map = () => {
                   <Typography
                     variant="body1"
                     component="div"
-                    sx={{ fontWeight: 600 }}
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: { xs: "18px", md: "20px" },
+                    }}
                   >
                     {`State: ${selectedPlace.data.details.state}`}
                   </Typography>
@@ -388,7 +404,10 @@ const Map = () => {
                   <Typography
                     variant="body1"
                     component="div"
-                    sx={{ fontWeight: 600 }}
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: { xs: "18px", md: "20px" },
+                    }}
                   >
                     {`Country: ${selectedPlace.data.details.country}`}
                   </Typography>
