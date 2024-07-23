@@ -2,7 +2,7 @@ import React from "react";
 
 // MUI imports
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Modal, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -27,16 +27,18 @@ import { db } from "../firebase-config";
 //leaflet
 import L from "leaflet";
 import "leaflet-curve";
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet/dist/leaflet.css';
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
 // components
 import AddPlaceModal from "../components/addModal";
 import MarkerClusterGroup from "../components/clusterGroup";
+import Onboarding from "../components/onboarding";
+
 // assets
 import pin from "../assets/location-pin.png";
-
+import dbLogo from "../assets/dbLogo.png";
 // map key
 const apiKey = "37b4cf9407c146caa22bf64efcc6ed65";
 
@@ -61,7 +63,8 @@ const Map = () => {
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [selectedPlace, setSelectedPlace] = React.useState(null);
   const [placeDetails, setPlaceDetails] = React.useState(null);
-
+  const [showOnboarding, setShowOnboarding] = React.useState(true);
+  const [modal, setModal] = React.useState(true);
   // use ref
   const mapRef = React.useRef();
 
@@ -71,6 +74,11 @@ const Map = () => {
     fetchPlaces();
   }, [position]);
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      setModal(false);
+    }, 3000);
+  }, []);
   // ------------------------------ functionalities -----------------------------------------
 
   // fetch local details from map
@@ -196,6 +204,10 @@ const Map = () => {
     }
   };
 
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+  };
+
   // ------------------- Custom Styles -----------------------
   const listStyle = {
     fontSize: { xs: "14px", md: "25px" },
@@ -230,32 +242,19 @@ const Map = () => {
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           marginBottom: 2,
         }}
       >
-        {/* <TextField
-          label="Search location"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          variant="outlined"
-          sx={{
-            width: { xs: "100%", md: "80%" },
-            marginBottom: { xs: 2, md: 0 },
-            "& .MuiInputBase-root": {
-              height: "40px",
-            },
-            "& .MuiInputLabel-root": {
-              fontSize: "14px",
-            },
-            "& .MuiInputBase-input": {
-              fontSize: "14px",
-            },
+        <img
+          src={dbLogo}
+          alt="Logo"
+          style={{
+            width: "15%",
+            height: 50,
           }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch();
-          }}
-        /> */}
+        />
+
         <Button
           sx={{
             color: "#fff",
@@ -452,47 +451,75 @@ const Map = () => {
     <Box
       sx={{
         position: "relative",
-        height: { xs: "80vh", md: "86vh" },
+        height: { xs: "100vh", md: "100vh" },
         width: "calc(100vw - 40px)",
-        margin: 2,
       }}
     >
-      {header()}
-      {mapContainer()}
+      <Box
+        sx={{
+          position: "relative",
+          height: { xs: "80vh", md: "86vh" },
+          width: "calc(100vw - 40px)",
+          margin: 2,
+        }}
+      >
+        {header()}
+        {mapContainer()}
 
-      <Button
-        variant="contained"
+        <Button
+          variant="contained"
+          sx={{
+            position: "absolute",
+            top: { xs: "20%", md: "13%" },
+            right: 16,
+            zIndex: 1000,
+          }}
+          onClick={handleLocateMe}
+        >
+          <MyLocationIcon />
+        </Button>
+
+        <AddPlaceModal
+          open={open}
+          onClose={() => setOpen(false)}
+          onUpdatePlace={handleUpdatePlace}
+          place={selectedPlace}
+          handleClose={() => setOpen(false)}
+          apiKey={apiKey}
+          fetchPlaces={fetchPlaces}
+          placeDetails={selectedPlace ? selectedPlace.data : null}
+        />
+
+        <Drawer
+          anchor="left"
+          open={openDrawer}
+          onClose={() => setOpenDrawer(false)}
+        >
+          {DrawerList}
+        </Drawer>
+
+        <ToastContainer />
+      </Box>
+
+      <Modal
+        open={modal}
         sx={{
           position: "absolute",
-          top: { xs: "20%", md: "13%" },
-          right: 16,
-          zIndex: 1000,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "#ffffff30" ,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1300,
+          width: "100vw",
+          height: "100vh",
         }}
-        onClick={handleLocateMe}
       >
-        <MyLocationIcon />
-      </Button>
-
-      <AddPlaceModal
-        open={open}
-        onClose={() => setOpen(false)}
-        onUpdatePlace={handleUpdatePlace}
-        place={selectedPlace}
-        handleClose={() => setOpen(false)}
-        apiKey={apiKey}
-        fetchPlaces={fetchPlaces}
-        placeDetails={selectedPlace ? selectedPlace.data : null}
-      />
-
-      <Drawer
-        anchor="left"
-        open={openDrawer}
-        onClose={() => setOpenDrawer(false)}
-      >
-        {DrawerList}
-      </Drawer>
-
-      <ToastContainer />
+        <Onboarding onComplete={handleOnboardingComplete} />
+      </Modal>
     </Box>
   );
 };

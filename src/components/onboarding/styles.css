@@ -1,0 +1,51 @@
+/* Define keyframe for logo entry from left */
+@keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+  /* Define keyframe for text entry from right */
+  @keyframes slideInFromRight {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+  /* Define keyframe for expanding and fading out */
+  @keyframes expandFadeOut {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+  
+  /* Apply animation for logo entry */
+  .logo-enter {
+    animation: slideInFromLeft 1s forwards;
+  }
+  
+  /* Apply animation for text entry */
+  .text-enter {
+    animation: slideInFromRight 1s forwards;
+  }
+  
+  /* Apply combined animation for expanding and fading out */
+  .logo-expand-fade-out {
+    animation: expandFadeOut 1.5s forwards;
+  }
+  
+  .text-expand-fade-out {
+    animation: expandFadeOut 1.5s forwards;
+  }
+  
