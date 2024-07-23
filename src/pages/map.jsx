@@ -2,7 +2,7 @@ import React from "react";
 
 // MUI imports
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -27,12 +27,13 @@ import { db } from "../firebase-config";
 //leaflet
 import L from "leaflet";
 import "leaflet-curve";
-import "leaflet/dist/leaflet.css";
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet/dist/leaflet.css';
 import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
-
 // components
 import AddPlaceModal from "../components/addModal";
-
+import MarkerClusterGroup from "../components/clusterGroup";
 // assets
 import pin from "../assets/location-pin.png";
 
@@ -263,7 +264,7 @@ const Map = () => {
             width: { xs: "100%", md: "18%" },
             fontWeight: "bold",
             fontSize: { xs: "14px" },
-            alignSelf:"end"
+            alignSelf: "end",
           }}
           variant="contained"
           onClick={() => setOpen(true)}
@@ -286,24 +287,26 @@ const Map = () => {
         }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        {places.map((place) => (
-          <Marker
-            key={place.id}
-            position={place.data.position}
-            icon={customIcon}
-            eventHandlers={{
-              click: () => {
-                setSelectedPlace(place);
-                setOpenDrawer(true);
-              },
-            }}
-          >
-            <Tooltip direction="top" offset={[0, -35]} opacity={1} permanent>
-              {place.data.details.companyName}
-            </Tooltip>
-          </Marker>
-        ))}
-        <Marker position={position} icon={customIcon} />
+        <MarkerClusterGroup>
+          {places.map((place) => (
+            <Marker
+              key={place.id}
+              position={place.data.position}
+              icon={customIcon}
+              eventHandlers={{
+                click: () => {
+                  setSelectedPlace(place);
+                  setOpenDrawer(true);
+                },
+              }}
+            >
+              <Tooltip direction="top" offset={[0, -35]} opacity={1} permanent>
+                {place.data.details.companyName}
+              </Tooltip>
+            </Marker>
+          ))}
+          <Marker position={position} icon={customIcon} />
+        </MarkerClusterGroup>
       </MapContainer>
     );
   };
