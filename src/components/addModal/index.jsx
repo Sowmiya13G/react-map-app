@@ -44,6 +44,7 @@ const initialState = {
   pincode: "",
   state: "",
   country: "",
+  link: "",
 };
 
 // styles
@@ -90,33 +91,31 @@ const AddPlaceModal = ({
   apiKey,
   fetchPlaces,
 }) => {
+  console.log(placeDetails);
   // local states
   const [details, setDetails] = React.useState(initialState);
-  const [clickedPosition, setClickedPosition] = React.useState(samplePosition);
+  const [clickedPosition, setClickedPosition] = React.useState(
+    placeDetails?.position
+  );
   const [err, setErr] = React.useState(initialState);
   const [locationDetails, setLocationDetails] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
   // use ref
-  const mapRef = React.useRef();
+  const mapPositionRef = React.useRef();
 
   // use effects
   React.useEffect(() => {
     if (placeDetails) {
       setDetails(placeDetails.details);
       setClickedPosition(placeDetails.position);
-      if (mapRef.current) {
-        mapRef.current.flyTo(placeDetails.position, 15);
+      if (mapPositionRef.current) {
+        mapPositionRef.current.setView(placeDetails.position, 15);
       }
     }
   }, [placeDetails, open]);
 
   // ------------------------------ Functionalities ------------------------------------
-  const handleCloseModal = () => {
-    setDetails(initialState);
-    setErr(initialState);
-    onClose();
-  };
 
   const ClickHandler = ({ onClick }) => {
     useMapEvents({
@@ -127,6 +126,13 @@ const AddPlaceModal = ({
     return null;
   };
 
+  const handleResetFields = () => {
+    setDetails(initialState);
+    setErr(initialState);
+    setTimeout(() => {
+      onClose();
+    }, 100);
+  };
   // add place
   const handleAddPlace = async () => {
     const newErr = {
@@ -162,19 +168,21 @@ const AddPlaceModal = ({
             pincode: details?.pincode,
             state: details?.state,
             country: details?.country,
+            link: details?.link,
           },
           position: newPosition,
         });
 
         toast.success("Client Added");
-        handleCloseModal();
         fetchPlaces();
+        handleResetFields();
       } else {
         toast.error("Location not found");
       }
     } catch (error) {
       console.error("Error adding place to Firestore:", error);
       toast.error("Error adding place to Firestore");
+      handleResetFields();
     } finally {
       setLoading(false);
     }
@@ -219,19 +227,21 @@ const AddPlaceModal = ({
             pincode: details.pincode,
             state: details.state,
             country: details.country,
+            link: details?.link,
           },
           position: newPosition,
         });
 
         toast.success("Client Updated");
-        handleCloseModal();
         fetchPlaces();
+        handleResetFields();
       } else {
         toast.error("Document not found for the given company name");
       }
     } catch (error) {
       console.error("Error updating place in Firestore:", error);
       toast.error("Error updating place in Firestore");
+      handleResetFields();
     } finally {
       setLoading(false);
     }
@@ -259,6 +269,7 @@ const AddPlaceModal = ({
               pincode: properties.postcode || "",
               state: properties.state || "",
               country: properties.country || "",
+              link: placeDetails ? prevDetails.link : "",
             }))
           : setDetails({
               companyName: "",
@@ -267,6 +278,7 @@ const AddPlaceModal = ({
               pincode: properties.postcode || "",
               state: properties.state || "",
               country: properties.country || "",
+              link: "",
             });
 
         setClickedPosition([lat, lng]);
@@ -282,13 +294,15 @@ const AddPlaceModal = ({
   return (
     <Modal
       open={open}
-      onClose={handleCloseModal}
+      onClose={() => handleResetFields()}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
       <Box sx={style}>
         <CancelIcon
-          onClick={handleCloseModal}
+          onClick={() => {
+            handleResetFields();
+          }}
           sx={{
             display: "flex",
             alignSelf: "flex-end",
@@ -309,7 +323,7 @@ const AddPlaceModal = ({
               center={clickedPosition}
               zoom={5}
               style={{ height: "100%", width: "100%" }}
-              ref={mapRef}
+              ref={mapPositionRef}
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <Marker position={clickedPosition} icon={customIcon} />
@@ -413,6 +427,12 @@ const AddPlaceModal = ({
               else setErr({ ...err, country: "" });
             }}
             err={err.country}
+          />
+          <TextInput
+            label="Link"
+            name="link"
+            value={details.link}
+            onChange={(e) => setDetails({ ...details, link: e.target.value })}
           />
         </Box>
 

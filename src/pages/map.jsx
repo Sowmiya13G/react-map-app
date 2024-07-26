@@ -1,14 +1,14 @@
 import React from "react";
 
 // MUI imports
+import CancelIcon from "@mui/icons-material/Cancel";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // other packages
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -37,8 +37,8 @@ import MarkerClusterGroup from "../components/clusterGroup";
 import Onboarding from "../components/onboarding";
 
 // assets
-import pin from "../assets/location-pin.png";
 import dbLogo from "../assets/dbLogo.png";
+import pin from "../assets/location-pin.png";
 // map key
 const apiKey = "37b4cf9407c146caa22bf64efcc6ed65";
 
@@ -51,7 +51,7 @@ const customIcon = L.icon({
 });
 
 // sample position
-const samplePosition = [21.642491280846862, 78.83925616878989];
+const samplePosition = [13.0234298, 80.2085125];
 
 const Map = () => {
   // local states
@@ -60,11 +60,13 @@ const Map = () => {
   const [searchText, setSearchText] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [places, setPlaces] = React.useState([]);
-  const [openDrawer, setOpenDrawer] = React.useState(false);
   const [selectedPlace, setSelectedPlace] = React.useState(null);
+  console.log(selectedPlace);
   const [placeDetails, setPlaceDetails] = React.useState(null);
   const [showOnboarding, setShowOnboarding] = React.useState(true);
   const [modal, setModal] = React.useState(true);
+  const [detailsModalOpen, setDetailsModalOpen] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(false);
   // use ref
   const mapRef = React.useRef();
 
@@ -161,7 +163,7 @@ const Map = () => {
     try {
       await deleteDoc(doc(db, "places", selectedPlace.id));
       fetchPlaces();
-      setOpenDrawer(false);
+      setDetailsModalOpen(false);
       toast.success("Place deleted successfully");
     } catch (error) {
       console.error("Error deleting place:", error);
@@ -176,7 +178,7 @@ const Map = () => {
       return;
     }
 
-    setOpenDrawer(false);
+    setDetailsModalOpen(false);
     setOpen(true);
 
     const { position } = selectedPlace.data;
@@ -222,12 +224,9 @@ const Map = () => {
 
   const buttonContainer = {
     display: "flex",
-    flexDirection: { xs: "column", md: "row" },
-    padding: 3,
-    alignItems: { md: "center" },
-    width: "90%",
-    justifyContent: { md: "space-between" },
-    marginRight: { xs: "2%" },
+    flexDirection: { xs: "column" },
+    justifyContent: { md: "flex-end" },
+    gap: 2,
   };
 
   // --------------------- Render UI ----------------------------------
@@ -266,7 +265,9 @@ const Map = () => {
             alignSelf: "end",
           }}
           variant="contained"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+          }}
         >
           ADD NEW CLIENT
         </Button>
@@ -295,7 +296,7 @@ const Map = () => {
               eventHandlers={{
                 click: () => {
                   setSelectedPlace(place);
-                  setOpenDrawer(true);
+                  setDetailsModalOpen(true);
                 },
               }}
             >
@@ -304,148 +305,89 @@ const Map = () => {
               </Tooltip>
             </Marker>
           ))}
-          <Marker position={position} icon={customIcon} />
+          {/* <Marker position={position} icon={customIcon} /> */}
         </MarkerClusterGroup>
       </MapContainer>
     );
   };
 
-  const DrawerList = (
-    <Box
-      sx={{ width: { xs: 250, md: 650 } }}
-      role="presentation"
-      onClick={() => setOpenDrawer(false)}
-    >
-      <List>
-        {selectedPlace ? (
-          <>
-            <ListItem>
-              <ListItemText
-                sx={listStyle}
-                primary={
-                  <Typography
-                    variant="body1"
-                    component="div"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: { xs: "18px", md: "20px" },
-                    }}
-                  >
-                    {`Company Name: ${selectedPlace.data.details.companyName}`}
-                  </Typography>
-                }
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={
-                  <Typography
-                    variant="body1"
-                    component="div"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: { xs: "18px", md: "20px" },
-                    }}
-                  >
-                    {`Address: ${selectedPlace.data.details.address}`}
-                  </Typography>
-                }
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={
-                  <Typography
-                    variant="body1"
-                    component="div"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: { xs: "18px", md: "20px" },
-                    }}
-                  >
-                    {`City: ${selectedPlace.data.details.city}`}
-                  </Typography>
-                }
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={
-                  <Typography
-                    variant="body1"
-                    component="div"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: { xs: "18px", md: "20px" },
-                    }}
-                  >
-                    {`Pincode: ${selectedPlace.data.details.pincode}`}
-                  </Typography>
-                }
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={
-                  <Typography
-                    variant="body1"
-                    component="div"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: { xs: "18px", md: "20px" },
-                    }}
-                  >
-                    {`State: ${selectedPlace.data.details.state}`}
-                  </Typography>
-                }
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={
-                  <Typography
-                    variant="body1"
-                    component="div"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: { xs: "18px", md: "20px" },
-                    }}
-                  >
-                    {`Country: ${selectedPlace.data.details.country}`}
-                  </Typography>
-                }
-              />
-            </ListItem>
+  // render location details
+  const renderLocationDetails = () => {
+    if (!selectedPlace) return null;
+    const { companyName, address, country, state, city, pincode, link } =
+      selectedPlace?.data?.details;
+    return (
+      <List
+        sx={{
+          width: "90%",
+          margin: "0 auto",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              ...listStyle,
+              ...boldStyle,
+            }}
+          >
+            {companyName}
+          </Typography>
+          <Box onClick={() => setDetailsModalOpen(false)}>
+            <CancelIcon />
+          </Box>
+        </Box>
+        <Divider />
 
-            <Divider />
-            <Box sx={buttonContainer}>
-              <Button
-                variant="contained"
-                sx={{ width: { md: "45%", xs: "85%" } }}
-                onClick={handleDelete}
-              >
-                DELETE
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleEdit}
-                sx={{
-                  marginTop: { xs: 3, md: 0 },
-                  width: { md: "45%", xs: "85%" },
-                }}
-              >
-                EDIT
-              </Button>
+        <Box
+          sx={{ display: "flex", alignItems: "start", flexDirection: "column" }}
+        >
+          <Typography sx={{ padding: 1 }}>
+            <span style={semiBoldStyle}>Address:</span> {address}
+          </Typography>
+          <Typography sx={{ padding: 1 }}>
+            <span style={semiBoldStyle}>City:</span> {city}
+          </Typography>
+          <Typography sx={{ padding: 1 }}>
+            <span style={semiBoldStyle}>Pin Code:</span> {pincode}
+          </Typography>
+          <Typography sx={{ padding: 1 }}>
+            <span style={semiBoldStyle}>State:</span> {state}
+          </Typography>
+          <Typography sx={{ padding: 1 }}>
+            <span style={semiBoldStyle}>Country:</span> {country}
+          </Typography>
+          <Typography sx={{ padding: 1, display: "flex", flexWrap: "wrap" }}>
+            <span style={semiBoldStyle}>Link:</span>{" "}
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "blue" }}
+            >
+              {link}
+            </a>
+          </Typography>
+        </Box>
+
+        <Box sx={{ position: "absolute", right: 0, top: "18%" }}>
+          <Box sx={buttonContainer}>
+            <Box onClick={handleEdit}>
+              <EditLocationAltIcon />
             </Box>
-          </>
-        ) : (
-          <ListItem>
-            <ListItemText primary="Select a place to see details" />
-          </ListItem>
-        )}
+            <Box onClick={handleDelete}>
+              <DeleteIcon />
+            </Box>
+          </Box>
+        </Box>
       </List>
-    </Box>
-  );
+    );
+  };
 
   return (
     <Box
@@ -481,23 +423,14 @@ const Map = () => {
 
         <AddPlaceModal
           open={open}
-          onClose={() => setOpen(false)}
-          onUpdatePlace={handleUpdatePlace}
-          place={selectedPlace}
-          handleClose={() => setOpen(false)}
+          onClose={() => {
+            setOpen(false);
+            setSelectedPlace(null);
+          }}
           apiKey={apiKey}
           fetchPlaces={fetchPlaces}
           placeDetails={selectedPlace ? selectedPlace.data : null}
         />
-
-        <Drawer
-          anchor="left"
-          open={openDrawer}
-          onClose={() => setOpenDrawer(false)}
-        >
-          {DrawerList}
-        </Drawer>
-
         <ToastContainer />
       </Box>
 
@@ -509,7 +442,7 @@ const Map = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: "#ffffff30" ,
+          backgroundColor: "transparent",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -520,6 +453,26 @@ const Map = () => {
       >
         <Onboarding onComplete={handleOnboardingComplete} />
       </Modal>
+
+      {Boolean(detailsModalOpen) && (
+        <Box
+          sx={{
+            width: { md: "25%" },
+            backgroundColor: "#fff",
+            borderTopRightRadius: 50,
+            borderBottomLeftRadius: 50,
+            borderBottomRightRadius: 50,
+            boxShadow: 10,
+            position: "absolute",
+            bottom: "10%",
+            right: "10%",
+            p: 1,
+            zIndex: 3000,
+          }}
+        >
+          {renderLocationDetails()}
+        </Box>
+      )}
     </Box>
   );
 };
