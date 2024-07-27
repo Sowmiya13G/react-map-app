@@ -1,37 +1,46 @@
-// import { useEffect } from 'react';
-// import { useMap } from 'react-leaflet';
-// import L from 'leaflet';
-// import 'leaflet.markercluster';
-
-// const MarkerClusterGroup = ({ children }) => {
-//   const map = useMap();
-
-//   useEffect(() => {
-//     const markerClusterGroup = L.markerClusterGroup();
-//     map.addLayer(markerClusterGroup);
-
-//     const markers = L.layerGroup();
-//     markerClusterGroup.addLayer(markers);
-
-//     return () => {
-//       map.removeLayer(markerClusterGroup);
-//     };
-//   }, [map]);
-
-//   return children;
-// };
-
-// export default MarkerClusterGroup;
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet.markercluster';
+import './styles.css';
 
 const MarkerClusterGroup = ({ children }) => {
   const map = useMap();
-  
+  const [zoom, setZoom] = useState(map.getZoom());
+
   useEffect(() => {
-    const markerClusterGroup = L.markerClusterGroup();
+    const handleZoomEnd = () => {
+      setZoom(map.getZoom());
+    };
+
+    map.on('zoomend', handleZoomEnd);
+
+    const iconCreateFunction = (cluster) => {
+      const count = cluster.getChildCount();
+      let color = '#3c99dc';
+
+      if (count < 10) {
+        color = '#3c99dc';
+      } else if (count < 50) {
+        color = '#0f5298';
+      } else {
+        color = '#2565ae';
+      }
+
+      // Adjust size based on zoom level
+      const size = Math.max(30, 40 - (18 - zoom));
+
+      return L.divIcon({
+        html: `<div class="custom-cluster" style="background-color: ${color}; width: ${size}px; height: ${size}px;"><span>${count}</span></div>`,
+        className: 'custom-cluster-icon',
+        iconSize: L.point(size, size, true),
+      });
+    };
+
+    const markerClusterGroup = L.markerClusterGroup({
+      iconCreateFunction,
+    });
+
     map.addLayer(markerClusterGroup);
 
     React.Children.forEach(children, (child) => {
@@ -61,8 +70,9 @@ const MarkerClusterGroup = ({ children }) => {
 
     return () => {
       map.removeLayer(markerClusterGroup);
+      map.off('zoomend', handleZoomEnd);
     };
-  }, [map, children]);
+  }, [map, children, zoom]);
 
   return null;
 };

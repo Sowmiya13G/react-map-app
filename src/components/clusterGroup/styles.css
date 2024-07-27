@@ -1,0 +1,16 @@
+.custom-cluster {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .custom-cluster-icon {
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  
