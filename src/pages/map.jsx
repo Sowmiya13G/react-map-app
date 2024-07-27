@@ -13,7 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import Draggable from "react-draggable";
 //firebase
 import {
   collection,
@@ -66,7 +66,6 @@ const Map = () => {
   const [showOnboarding, setShowOnboarding] = React.useState(true);
   const [modal, setModal] = React.useState(true);
   const [detailsModalOpen, setDetailsModalOpen] = React.useState(false);
-  const [expanded, setExpanded] = React.useState(false);
   // use ref
   const mapRef = React.useRef();
 
@@ -131,28 +130,6 @@ const Map = () => {
       toast.error("Geolocation is not supported by this browser.");
     }
   };
-
-  // search
-  const handleSearch = async () => {
-    if (searchText.trim() === "") return;
-
-    try {
-      const response = await axios.get(
-        `https://api.geoapify.com/v1/geocode/search?text=${searchText}&apiKey=${apiKey}`
-      );
-      if (response.data.features.length > 0) {
-        const { lat, lon } = response.data.features[0].properties;
-        setPosition([lat, lon]);
-        mapRef.current?.setView([lat, lon], 15);
-      } else {
-        toast.error("Location not found");
-      }
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-      toast.error("Error fetching search results");
-    }
-  };
-
   // delete added place
   const handleDelete = async () => {
     if (!selectedPlace) {
@@ -189,21 +166,6 @@ const Map = () => {
     }
 
     setPlaceDetails(selectedPlace.data);
-  };
-
-  // update place details
-  const handleUpdatePlace = async (updatedPlace) => {
-    if (!selectedPlace) return;
-
-    try {
-      await updateDoc(doc(db, "places", selectedPlace.id), updatedPlace);
-      fetchPlaces();
-      setOpen(false);
-      toast.success("Place updated successfully");
-    } catch (error) {
-      console.error("Error updating place:", error);
-      toast.error("Error updating place");
-    }
   };
 
   const handleOnboardingComplete = () => {
@@ -455,23 +417,25 @@ const Map = () => {
       </Modal>
 
       {Boolean(detailsModalOpen) && (
-        <Box
-          sx={{
-            width: { md: "25%" },
-            backgroundColor: "#fff",
-            borderTopRightRadius: 50,
-            borderBottomLeftRadius: 50,
-            borderBottomRightRadius: 50,
-            boxShadow: 10,
-            position: "absolute",
-            bottom: "10%",
-            right: "10%",
-            p: 1,
-            zIndex: 3000,
-          }}
-        >
-          {renderLocationDetails()}
-        </Box>
+        <Draggable>
+          <Box
+            sx={{
+              width: { md: "25%" },
+              backgroundColor: "#fff",
+              borderTopRightRadius: 50,
+              borderBottomLeftRadius: 50,
+              borderBottomRightRadius: 50,
+              boxShadow: 10,
+              position: "absolute",
+              bottom: "10%",
+              right: "10%",
+              p: 1,
+              zIndex: 3000,
+            }}
+          >
+            {renderLocationDetails()}
+          </Box>
+        </Draggable>
       )}
     </Box>
   );
