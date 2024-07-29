@@ -3,34 +3,18 @@ import { Box, Typography } from "@mui/material";
 import logoGif from "../../assets/home-page-logo.gif";
 import "./styles.css";
 
-const Onboarding = ({ onComplete }) => {
-  const [showOnboarding, setShowOnboarding] = useState(true);
-  const [animationStarted, setAnimationStarted] = useState(false);
-  const [textVisible, setTextVisible] = useState(false);
+const Onboarding = () => {
+  const [showlogo, setShowLogo] = useState(true);
 
   useEffect(() => {
-    // const timer = setTimeout(() => {
-    //   setAnimationStarted(true);
-    //   setTimeout(() => {
-    //     setTextVisible(true);
-    //     setTimeout(() => {
-    //       setShowOnboarding(false);
-    //       onComplete();
-    //     }, 3000);
-    //   }, 1000);
-    // }, 700);
+    setTimeout(() => {
+      setShowLogo(false);
+      // onComplete();
+    }, 2000);
+    // return () => clearTimeout(timer);
+  }, []);
 
-      const timer = setTimeout(() => {
-        setAnimationStarted(true);
-        setTimeout(() => {
-          setShowOnboarding(false);
-          onComplete();
-        }, 3200);
-      }, 1000);
-    return () => clearTimeout(timer);
-  }, [onComplete]);
-
-  return showOnboarding ? (
+  return (
     <Box
       className="animated-background"
       sx={{
@@ -49,14 +33,27 @@ const Onboarding = ({ onComplete }) => {
           display: "flex",
           alignItems: "center",
           flexDirection: "row",
+          position: "relative",
         }}
       >
+        {showlogo && (
+          <img
+            src={logoGif}
+            alt="Onboarding"
+            className=" logo-animation"
+            style={{
+              width: "120px",
+              height: "90px",
+              position: "absolute",
+              left: "11%",
+            }}
+          />
+        )}
         <Typography
-          /*  className={`text-fade-in ${animationStarted ? "fade-out" : ""}`}*/
+          className=" blink-animation "
           sx={{
             fontSize: "90px",
             fontWeight: "bold",
-            // color: animationStarted ? "black" : "transparent",
           }}
         >
           d
@@ -64,43 +61,33 @@ const Onboarding = ({ onComplete }) => {
         <img
           src={logoGif}
           alt="Onboarding"
-          // className={`logo-animation`}
+          className=" blink-animation"
           style={{ width: "120px", height: "90px" }}
         />
         <Typography
-          /*  className={`text-fade-in ${animationStarted ? "fade-out" : ""}`}*/
+          className=" blink-animation"
           sx={{
             fontSize: "90px",
             fontWeight: "bold",
-            // color: animationStarted ? "black" : "transparent",
           }}
         >
           dleblue
         </Typography>
       </Box>
- {     /*  {textVisible && (*/}
-        <Typography
-          /*  className={`text-fade-in typing-effect`}*/
-          sx={{
-            fontSize: "25px",
-            fontWeight: "bold",
-            color: "black",
-            marginTop: "10px",
-            letterSpacing: "3px",
-          }}
-        >
-          DIGITAL STRATEGY CONSULTING
-        </Typography>
-      {/* )} */}
-      <Box
+      <Typography
+        className="blink-animation logo-animatio "
         sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
+          fontSize: "25px",
+          fontWeight: "bold",
+          color: "black",
+          marginTop: "10px",
+          letterSpacing: "3px",
         }}
-      />
+      >
+        {" DIGITAL STRATEGY CONSULTING"}
+      </Typography>
     </Box>
-  ) : null;
+  );
 };
 
 export default Onboarding;

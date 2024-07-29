@@ -63,7 +63,6 @@ const Map = () => {
   const [selectedPlace, setSelectedPlace] = React.useState(null);
   console.log(selectedPlace);
   const [placeDetails, setPlaceDetails] = React.useState(null);
-  const [showOnboarding, setShowOnboarding] = React.useState(true);
   const [modal, setModal] = React.useState(true);
   const [detailsModalOpen, setDetailsModalOpen] = React.useState(false);
   // use ref
@@ -168,9 +167,7 @@ const Map = () => {
     setPlaceDetails(selectedPlace.data);
   };
 
-  const handleOnboardingComplete = () => {
-    setShowOnboarding(false);
-  };
+
 
   // ------------------- Custom Styles -----------------------
   const listStyle = {
@@ -213,7 +210,7 @@ const Map = () => {
           style={{
             width: "145px",
             height: "50px",
-            objectFit:"contain"
+            objectFit: "contain",
           }}
         />
 
@@ -229,7 +226,12 @@ const Map = () => {
           }}
           variant="contained"
           onClick={() => {
-            setOpen(true);
+            setPlaceDetails(null);
+            setSelectedPlace(null);
+            setDetailsModalOpen(false);
+            setTimeout(() => {
+              setOpen(true);
+            }, 100);
           }}
         >
           ADD NEW CLIENT
@@ -256,7 +258,7 @@ const Map = () => {
           url={`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${apiKey}`}
         /> */}
         <MarkerClusterGroup>
-          {places.map((place) => (  
+          {places.map((place) => (
             <Marker
               key={place.id}
               position={place.data.position}
@@ -306,7 +308,13 @@ const Map = () => {
           >
             {companyName}
           </Typography>
-          <Box onClick={() => setDetailsModalOpen(false)}>
+          <Box
+            onClick={() => {
+              setSelectedPlace(null);
+              setDetailsModalOpen(false);
+            }}
+            sx={{ cursor: "pointer" }}
+          >
             <CancelIcon />
           </Box>
         </Box>
@@ -345,11 +353,11 @@ const Map = () => {
 
         <Box sx={{ position: "absolute", right: 0, top: "18%" }}>
           <Box sx={buttonContainer}>
-            <Box onClick={handleEdit}>
-              <EditLocationAltIcon   sx={{color:"blue"}}/>
+            <Box onClick={() => handleEdit()}>
+              <EditLocationAltIcon sx={{ color: "blue" }} />
             </Box>
-            <Box onClick={handleDelete}>
-              <DeleteIcon  sx={{color:"red"}}/>
+            <Box onClick={() => handleDelete()}>
+              <DeleteIcon sx={{ color: "red" }} />
             </Box>
           </Box>
         </Box>
@@ -388,19 +396,18 @@ const Map = () => {
         >
           <MyLocationIcon />
         </Button>
-
-        <AddPlaceModal
-          open={open}
-          onClose={() => {
-            setOpen(false);
-            setSelectedPlace(null);
-          }}
-          apiKey={apiKey}
-          fetchPlaces={fetchPlaces}
-          placeDetails={selectedPlace ? selectedPlace.data : null}
-        />
-        <ToastContainer />
       </Box>
+
+      <AddPlaceModal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          setSelectedPlace(null);
+        }}
+        apiKey={apiKey}
+        fetchPlaces={() => fetchPlaces()}
+        placeDetails={selectedPlace ? selectedPlace.data : null}
+      />
 
       <Modal
         open={modal}
@@ -419,7 +426,7 @@ const Map = () => {
           height: "100vh",
         }}
       >
-        <Onboarding onComplete={handleOnboardingComplete} />
+        <Onboarding  />
       </Modal>
 
       {Boolean(detailsModalOpen) && (

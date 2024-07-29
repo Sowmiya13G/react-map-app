@@ -1,6 +1,6 @@
 @keyframes zoomOut {
   0% {
-    transform: scale(2);
+    transform: scale(10);
   }
   100% {
     transform: scale(1);
@@ -8,44 +8,30 @@
 }
 
 @keyframes fadeIn {
-  from {
+  0% {
     opacity: 0;
   }
-  to {
+  100% {
     opacity: 1;
   }
 }
 
 @keyframes fadeOut {
-  from {
+  0% {
     opacity: 1;
   }
-  to {
+  100% {
     opacity: 0;
   }
 }
 
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-@keyframes blink {
+@keyframes blinking {
   0% {
-    border-right-color: black;
+    opacity: 0;
   }
-  49% {
-    border-right-color: black;
-  }
-  50% {
-    border-right-color: transparent;
-  }
+
   100% {
-    border-right-color: transparent;
+    opacity: 1;
   }
 }
 
@@ -54,24 +40,17 @@
 }
 
 .text-fade-in {
-  animation: fadeIn 1s forwards;
-  animation-delay: 1s; /* start fade-in after logo zoom out */
+  animation: fadeIn 1s ease-in forwards;
+  animation-delay: 1s; /* Start after logo zoom out */
 }
 
-.typing-effect {
-  width: 15ch; /* Adjust the width according to your text length */
-  white-space: nowrap;
-  overflow: hidden;
-  border-right: 3px solid black;
-  animation: typing 3s steps(30), blink 0.75s step-end infinite;
-  animation-delay: 2s; /* Delay to start after the text fades in */
+.blink-animation {
+  animation: blinking 1s infinite;
+  animation-delay: 1s;
+  opacity: 0; /* Start blinking after text fades in */
 }
 
 .fade-out {
   animation: fadeOut 1s forwards;
-  animation-delay: 5s; 
-}
-
-.fade{
-  color: transparent;
+  animation-delay: 6s; /* Delay to start fade-out */
 }

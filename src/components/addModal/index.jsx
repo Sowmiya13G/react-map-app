@@ -92,6 +92,7 @@ const AddPlaceModal = ({
   fetchPlaces,
 }) => {
   console.log(placeDetails);
+  console.log(fetchPlaces());
   // local states
   const [details, setDetails] = React.useState(initialState);
   const [clickedPosition, setClickedPosition] = React.useState(
@@ -106,12 +107,16 @@ const AddPlaceModal = ({
 
   // use effects
   React.useEffect(() => {
+    console.log(placeDetails);
+
     if (placeDetails) {
       setDetails(placeDetails.details);
       setClickedPosition(placeDetails.position);
       if (mapPositionRef.current) {
         mapPositionRef.current.setView(placeDetails.position, 15);
       }
+    } else {
+      setDetails(initialState);
     }
   }, [placeDetails, open]);
 
@@ -312,30 +317,11 @@ const AddPlaceModal = ({
         />
 
         <Box sx={inputBoxStyle}>
-          <Box
-            sx={{
-              height: { xs: "45%", md: "45%" },
-              width: "100%",
-              marginY: { xs: 1, md: 2 },
-            }}
-          >
-            <MapContainer
-              center={clickedPosition}
-              zoom={5}
-              style={{ height: "100%", width: "100%" }}
-              ref={mapPositionRef}
-            >
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <Marker position={clickedPosition} icon={customIcon} />
-              <ClickHandler onClick={handleClick} />
-            </MapContainer>
-          </Box>
           <Typography
             id="modal-title"
             variant="h6"
             component="h2"
             sx={{
-              marginTop: { xs: 1, md: 2 },
               marginBottom: { xs: 1, md: 2 },
               fontSize: { xs: "18px", md: "20px" },
               fontWeight: "bold",
@@ -343,6 +329,30 @@ const AddPlaceModal = ({
           >
             {placeDetails ? "Edit Place" : "Add New Place"}
           </Typography>
+          <Box
+            sx={{
+              height: { xs: "50%", md: "50%" },
+              width: "100%",
+              marginY: { xs: 1, md: 2 },
+            }}
+          >
+            <MapContainer
+              center={clickedPosition || samplePosition}
+              zoom={5}
+              style={{ height: "100%", width: "100%" }}
+              ref={mapPositionRef}
+            >
+              <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+
+              {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+              <Marker
+                position={clickedPosition || samplePosition}
+                icon={customIcon}
+              />
+              <ClickHandler onClick={handleClick} />
+            </MapContainer>
+          </Box>
+
           <TextInput
             label="Company Name"
             name="companyName"
@@ -448,7 +458,9 @@ const AddPlaceModal = ({
             fontWeight: "bold",
           }}
           variant="contained"
-          onClick={placeDetails ? handleSave : handleAddPlace}
+          onClick={() => {
+            placeDetails ? handleSave() : handleAddPlace();
+          }}
           disabled={loading}
         >
           {loading ? (
