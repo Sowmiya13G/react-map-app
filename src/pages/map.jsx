@@ -78,7 +78,7 @@ const Map = () => {
   React.useEffect(() => {
     setTimeout(() => {
       setModal(false);
-    }, 3000);
+    }, 30000);
   }, []);
   // ------------------------------ functionalities -----------------------------------------
 
