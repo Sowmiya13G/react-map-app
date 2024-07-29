@@ -355,7 +355,7 @@ const Map = () => {
     <Box
       sx={{
         position: "relative",
-        height: { xs: "100vh", md: "100vh" },
+        height: { xs: "100vh", md: "90vh" },
         width: "calc(100vw - 40px)",
       }}
     >
