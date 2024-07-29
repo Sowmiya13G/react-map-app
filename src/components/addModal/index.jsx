@@ -91,8 +91,6 @@ const AddPlaceModal = ({
   apiKey,
   fetchPlaces,
 }) => {
-  console.log(placeDetails);
-  console.log(fetchPlaces());
   // local states
   const [details, setDetails] = React.useState(initialState);
   const [clickedPosition, setClickedPosition] = React.useState(

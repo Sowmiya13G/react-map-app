@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // MUI imports
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -14,7 +14,13 @@ import Draggable from "react-draggable";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //firebase
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "../firebase-config";
 
 //leaflet
@@ -85,19 +91,38 @@ const Map = () => {
   };
 
   // fetch places from firebase fire store
-  const fetchPlaces = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "places"));
-      const fetchedPlaces = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        data: doc.data(),
-      }));
-      setPlaces(fetchedPlaces);
-    } catch (error) {
-      console.error("Error fetching places:", error);
-    }
-  };
+  // const fetchPlaces = async () => {
+  //   try {
+  //     const querySnapshot = await getDocs(collection(db, "places"));
+  //     const fetchedPlaces = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       data: doc.data(),
+  //     }));
+  //     setPlaces(fetchedPlaces);
+  //   } catch (error) {
+  //     console.error("Error fetching places:", error);
+  //   }
+  // };
 
+  useEffect(() => {
+    // Set up the real-time listener
+    const unsubscribe = onSnapshot(
+      collection(db, "places"),
+      (querySnapshot) => {
+        const fetchedPlaces = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          data: doc.data(),
+        }));
+        setPlaces(fetchedPlaces);
+      },
+      (error) => {
+        console.error("Error fetching places:", error);
+      }
+    );
+
+    // Clean up the listener on component unmount
+    return () => unsubscribe();
+  }, []);
   // fetch current location
   const handleLocateMe = () => {
     if (navigator.geolocation) {
@@ -125,7 +150,6 @@ const Map = () => {
 
     try {
       await deleteDoc(doc(db, "places", selectedPlace.id));
-      fetchPlaces();
       setDetailsModalOpen(false);
       toast.success("Place deleted successfully");
     } catch (error) {
@@ -176,7 +200,7 @@ const Map = () => {
   // use effects
   React.useEffect(() => {
     fetchLocationDetails(position[0], position[1]);
-    fetchPlaces();
+    // fetchPlaces();
   }, [position]);
 
   // --------------------- Render UI ----------------------------------
@@ -396,7 +420,7 @@ const Map = () => {
           setSelectedPlace(null);
         }}
         apiKey={apiKey}
-        fetchPlaces={() => fetchPlaces()}
+        // fetchPlaces={() => fetchPlaces()}
         placeDetails={selectedPlace ? selectedPlace.data : null}
       />
 

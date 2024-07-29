@@ -1,13 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
-  apiKey: "AIzaSyBqrT-g21HTBQgdOG7rKwItTnugrSHEuYk",
-  authDomain: "react-map-2aa90.firebaseapp.com",
-  projectId: "react-map-2aa90",
-  storageBucket: "react-map-2aa90.appspot.com",
-  messagingSenderId: "685140118732",
-  appId: "1:685140118732:web:9a36cc6f5c0f0616b34669",
-  measurementId: "G-NX4FVK6WCV",
+  apiKey: "AIzaSyA6Yq1JjOQQ-32jP7uRCxW3DnN7t3eMRz4",
+  authDomain: "doodleblueclientmap.firebaseapp.com",
+  projectId: "doodleblueclientmap",
+  storageBucket: "doodleblueclientmap.appspot.com",
+  messagingSenderId: "973239718663",
+  appId: "1:973239718663:web:fcf0f565deaaab0bf96ba2"
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
