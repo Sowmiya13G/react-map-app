@@ -9,17 +9,24 @@ const Onboarding = ({ onComplete }) => {
   const [textVisible, setTextVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimationStarted(true);
-      setTimeout(() => {
-        setTextVisible(true);
+    // const timer = setTimeout(() => {
+    //   setAnimationStarted(true);
+    //   setTimeout(() => {
+    //     setTextVisible(true);
+    //     setTimeout(() => {
+    //       setShowOnboarding(false);
+    //       onComplete();
+    //     }, 3000);
+    //   }, 1000);
+    // }, 700);
+
+      const timer = setTimeout(() => {
+        setAnimationStarted(true);
         setTimeout(() => {
           setShowOnboarding(false);
           onComplete();
-        }, 3150);
+        }, 3200);
       }, 1000);
-    }, 700);
-
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -45,11 +52,11 @@ const Onboarding = ({ onComplete }) => {
         }}
       >
         <Typography
-          className={`text-fade-in ${animationStarted ? "fade-out" : ""}`}
+          /*  className={`text-fade-in ${animationStarted ? "fade-out" : ""}`}*/
           sx={{
             fontSize: "90px",
             fontWeight: "bold",
-            color: animationStarted ?"black": "transparent",
+            // color: animationStarted ? "black" : "transparent",
           }}
         >
           d
@@ -57,23 +64,23 @@ const Onboarding = ({ onComplete }) => {
         <img
           src={logoGif}
           alt="Onboarding"
-          className={`logo-animation`}
+          // className={`logo-animation`}
           style={{ width: "120px", height: "90px" }}
         />
         <Typography
-          className={`text-fade-in ${animationStarted ? "fade-out" : ""}`}
+          /*  className={`text-fade-in ${animationStarted ? "fade-out" : ""}`}*/
           sx={{
             fontSize: "90px",
             fontWeight: "bold",
-            color: animationStarted ?"black": "transparent",
+            // color: animationStarted ? "black" : "transparent",
           }}
         >
           dleblue
         </Typography>
       </Box>
-      {textVisible && (
+ {     /*  {textVisible && (*/}
         <Typography
-          className={`text-fade-in typing-effect`}
+          /*  className={`text-fade-in typing-effect`}*/
           sx={{
             fontSize: "25px",
             fontWeight: "bold",
@@ -84,7 +91,7 @@ const Onboarding = ({ onComplete }) => {
         >
           DIGITAL STRATEGY CONSULTING
         </Typography>
-      )}
+      {/* )} */}
       <Box
         sx={{
           position: "absolute",
