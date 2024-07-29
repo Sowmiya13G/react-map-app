@@ -38,7 +38,7 @@ import Onboarding from "../components/onboarding";
 
 // assets
 import dbLogo from "../assets/dbLogo.png";
-import pin from "../assets/location-pin.png";
+import pin from "../assets/pinLogo.png";
 // map key
 const apiKey = "37b4cf9407c146caa22bf64efcc6ed65";
 
@@ -222,7 +222,7 @@ const Map = () => {
             color: "#fff",
             backgroundColor: "#0F67B1",
             padding: 1,
-            width: { xs: "100%", md: "18%" },
+            width: { xs: "100%", md: "150px" },
             fontWeight: "bold",
             fontSize: { xs: "14px" },
             alignSelf: "end",
@@ -256,7 +256,7 @@ const Map = () => {
           url={`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${apiKey}`}
         /> */}
         <MarkerClusterGroup>
-          {places.map((place) => (
+          {places.map((place) => (  
             <Marker
               key={place.id}
               position={place.data.position}
@@ -331,7 +331,7 @@ const Map = () => {
             <span style={semiBoldStyle}>Country:</span> {country}
           </Typography>
           <Typography sx={{ padding: 1, display: "flex", flexWrap: "wrap" }}>
-            <span style={semiBoldStyle}>Link:</span>{" "}
+            <span style={semiBoldStyle}> Map Link:</span>{" "}
             <a
               href={link}
               target="_blank"
@@ -346,10 +346,10 @@ const Map = () => {
         <Box sx={{ position: "absolute", right: 0, top: "18%" }}>
           <Box sx={buttonContainer}>
             <Box onClick={handleEdit}>
-              <EditLocationAltIcon />
+              <EditLocationAltIcon   sx={{color:"blue"}}/>
             </Box>
             <Box onClick={handleDelete}>
-              <DeleteIcon />
+              <DeleteIcon  sx={{color:"red"}}/>
             </Box>
           </Box>
         </Box>
@@ -426,7 +426,7 @@ const Map = () => {
         <Draggable>
           <Box
             sx={{
-              width: { md: "25%" },
+              width: { md: "450px" },
               backgroundColor: "#fff",
               borderTopRightRadius: 50,
               borderBottomLeftRadius: 50,
