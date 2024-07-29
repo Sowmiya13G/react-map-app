@@ -1,70 +1,77 @@
-/* Define keyframe for background gradient animation */
-@keyframes gradientAnimation {
+@keyframes zoomOut {
   0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
+    transform: scale(2);
   }
   100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Define keyframe for logo entry from left */
-@keyframes slideInFromLeft {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-/* Define keyframe for text entry from right */
-@keyframes slideInFromRight {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-/* Define keyframe for expanding and fading out */
-@keyframes expandFadeOut {
-  0% {
     transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
     opacity: 1;
   }
-  100% {
-    transform: scale(1.5);
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
     opacity: 0;
   }
 }
 
-/* Apply animation for background gradient */
-.animated-background {
-  background: linear-gradient(270deg, #562ee7, #5777e1, #1599d1, #42a5f5);
-  background-size: 800% 800%;
-  animation: gradientAnimation 15s ease infinite;
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
-/* Apply animation for logo entry */
-.logo-enter {
-  animation: slideInFromLeft 1s forwards;
+@keyframes blink {
+  0% {
+    border-right-color: black;
+  }
+  49% {
+    border-right-color: black;
+  }
+  50% {
+    border-right-color: transparent;
+  }
+  100% {
+    border-right-color: transparent;
+  }
 }
 
-/* Apply animation for text entry */
-.text-enter {
-  animation: slideInFromRight 1s forwards;
+.logo-animation {
+  animation: zoomOut 1s forwards;
 }
 
-/* Apply combined animation for expanding and fading out */
-.logo-expand-fade-out {
-  animation: expandFadeOut 1.5s forwards;
+.text-fade-in {
+  animation: fadeIn 1s forwards;
+  animation-delay: 1s; /* start fade-in after logo zoom out */
 }
 
-.text-expand-fade-out {
-  animation: expandFadeOut 1.5s forwards;
+.typing-effect {
+  width: 15ch; /* Adjust the width according to your text length */
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid black;
+  animation: typing 3s steps(30), blink 0.75s step-end infinite;
+  animation-delay: 2s; /* Delay to start after the text fades in */
+}
+
+.fade-out {
+  animation: fadeOut 1s forwards;
+  animation-delay: 5s; 
+}
+
+.fade{
+  color: transparent;
 }

@@ -6,15 +6,19 @@ import "./styles.css";
 const Onboarding = ({ onComplete }) => {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [animationStarted, setAnimationStarted] = useState(false);
+  const [textVisible, setTextVisible] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimationStarted(true);
       setTimeout(() => {
-        setShowOnboarding(false);
-        onComplete();
-      }, 3200);
-    }, 1000);
+        setTextVisible(true);
+        setTimeout(() => {
+          setShowOnboarding(false);
+          onComplete();
+        }, 3150);
+      }, 1000);
+    }, 700);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -33,35 +37,54 @@ const Onboarding = ({ onComplete }) => {
         width: "100%",
       }}
     >
-      <Typography
+      <Box
         sx={{
-          fontSize: "90px",
-          fontWeight: "bold",
-          color: "black",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
+          flexDirection: "row",
         }}
       >
-        d
+        <Typography
+          className={`text-fade-in ${animationStarted ? "fade-out" : ""}`}
+          sx={{
+            fontSize: "90px",
+            fontWeight: "bold",
+            color: animationStarted ?"black": "transparent",
+          }}
+        >
+          d
+        </Typography>
         <img
           src={logoGif}
           alt="Onboarding"
-          style={{ width: "120px", height: "90px"}}
+          className={`logo-animation`}
+          style={{ width: "120px", height: "90px" }}
         />
-        dleblue
-      </Typography>
-      <Typography
-        sx={{
-          fontSize: "25px",
-          fontWeight: "bold",
-          color: "black",
-          marginTop:"10px",
-          letterSpacing:"3px"
-        }}
-      >
-        DIGITAL STRATEGY CONSULTING
-      </Typography>
+        <Typography
+          className={`text-fade-in ${animationStarted ? "fade-out" : ""}`}
+          sx={{
+            fontSize: "90px",
+            fontWeight: "bold",
+            color: animationStarted ?"black": "transparent",
+          }}
+        >
+          dleblue
+        </Typography>
+      </Box>
+      {textVisible && (
+        <Typography
+          className={`text-fade-in typing-effect`}
+          sx={{
+            fontSize: "25px",
+            fontWeight: "bold",
+            color: "black",
+            marginTop: "10px",
+            letterSpacing: "3px",
+          }}
+        >
+          DIGITAL STRATEGY CONSULTING
+        </Typography>
+      )}
       <Box
         sx={{
           position: "absolute",
