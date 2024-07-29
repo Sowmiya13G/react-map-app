@@ -34,7 +34,7 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 // components
 import { TextInput } from "../textInput";
 // assets
-import pin from "../../assets/location-pin.png";
+import pin from "../../assets/pinLogo.png";
 
 // initial state
 const initialState = {
