@@ -5,23 +5,16 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
+import { Box, Button, Modal, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // other packages
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Draggable from "react-draggable";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 //firebase
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../firebase-config";
 
 //leaflet
@@ -67,12 +60,6 @@ const Map = () => {
   const [detailsModalOpen, setDetailsModalOpen] = React.useState(false);
   // use ref
   const mapRef = React.useRef();
-
-  // use effects
-  React.useEffect(() => {
-    fetchLocationDetails(position[0], position[1]);
-    fetchPlaces();
-  }, [position]);
 
   React.useEffect(() => {
     setTimeout(() => {
@@ -167,8 +154,6 @@ const Map = () => {
     setPlaceDetails(selectedPlace.data);
   };
 
-
-
   // ------------------- Custom Styles -----------------------
   const listStyle = {
     fontSize: { xs: "14px", md: "25px" },
@@ -187,6 +172,12 @@ const Map = () => {
     justifyContent: { md: "flex-end" },
     gap: 2,
   };
+
+  // use effects
+  React.useEffect(() => {
+    fetchLocationDetails(position[0], position[1]);
+    fetchPlaces();
+  }, [position]);
 
   // --------------------- Render UI ----------------------------------
 
@@ -426,7 +417,7 @@ const Map = () => {
           height: "100vh",
         }}
       >
-        <Onboarding  />
+        <Onboarding />
       </Modal>
 
       {Boolean(detailsModalOpen) && (
