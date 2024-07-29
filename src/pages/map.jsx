@@ -211,8 +211,9 @@ const Map = () => {
           src={dbLogo}
           alt="Logo"
           style={{
-            width: "15%",
-            height: 50,
+            width: "145px",
+            height: "50px",
+            objectFit:"contain"
           }}
         />
 
@@ -236,6 +237,7 @@ const Map = () => {
       </Box>
     );
   };
+  const apiKey = "37b4cf9407c146caa22bf64efcc6ed65";
 
   const mapContainer = () => {
     return (
@@ -248,7 +250,11 @@ const Map = () => {
           width: "100%",
         }}
       >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+        {/* <TileLayer url="https://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png" /> */}
+        {/* <TileLayer
+          url={`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${apiKey}`}
+        /> */}
         <MarkerClusterGroup>
           {places.map((place) => (
             <Marker
