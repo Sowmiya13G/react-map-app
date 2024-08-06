@@ -92,6 +92,7 @@ const AddPlaceModal = ({
   updatePosition = () => {},
 }) => {
   // local states
+
   const [details, setDetails] = React.useState(initialState);
   const [clickedPosition, setClickedPosition] = React.useState(
     placeDetails?.position
@@ -258,6 +259,10 @@ const AddPlaceModal = ({
       const longitude = match[2];
       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
       setClickedPosition([latitude, longitude]);
+      const position = [latitude, longitude];
+      if (mapPositionRef.current) {
+        mapPositionRef.current.flyTo(position, 15);
+      }
     }
   }, [details]);
 
