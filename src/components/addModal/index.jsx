@@ -84,12 +84,7 @@ const customIcon = L.icon({
 // sample position
 const samplePosition = [21.642491280846862, 78.83925616878989];
 
-const AddPlaceModal = ({
-  open,
-  onClose,
-  placeDetails,
-  apiKey,
-}) => {
+const AddPlaceModal = ({ open, onClose, placeDetails, apiKey }) => {
   // local states
   const [details, setDetails] = React.useState(initialState);
   const [clickedPosition, setClickedPosition] = React.useState(
@@ -231,38 +226,18 @@ const AddPlaceModal = ({
     const { lat, lng } = latlng;
     console.log(latlng);
     try {
-      const response = await axios.get(
-        `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${apiKey}`
-      );
+      // placeDetails
+      //   ? setDetails((prevDetails) => ({
+      //       companyName: placeDetails ? prevDetails.companyName : "",
+      //       link: placeDetails ? prevDetails.link : "",
+      //     }))
+      //   : setDetails({
+      //       companyName: "",
+      //       address: "",
+      //       link: "",
+      //     });
 
-      if (response.data && response.data.features.length > 0) {
-        const properties = response.data.features[0].properties;
-        setLocationDetails(properties);
-
-        placeDetails
-          ? setDetails((prevDetails) => ({
-              companyName: placeDetails ? prevDetails.companyName : "",
-              address: properties.address_line1 || "",
-              city: properties.city || "",
-              pincode: properties.postcode || "",
-              state: properties.state || "",
-              country: properties.country || "",
-              link: placeDetails ? prevDetails.link : "",
-            }))
-          : setDetails({
-              companyName: "",
-              address: "",
-              city: properties.city || "",
-              pincode: properties.postcode || "",
-              state: properties.state || "",
-              country: properties.country || "",
-              link: "",
-            });
-
-        setClickedPosition([lat, lng]);
-      } else {
-        toast.error("Location details not found");
-      }
+      setClickedPosition([lat, lng]);
     } catch (error) {
       console.error("Error fetching location details:", error);
       toast.error("Error fetching location details");
@@ -323,7 +298,7 @@ const AddPlaceModal = ({
           >
             <MapContainer
               center={clickedPosition || samplePosition}
-              zoom={5}
+              zoom={10}
               style={{ height: "100%", width: "100%" }}
               ref={mapPositionRef}
             >
