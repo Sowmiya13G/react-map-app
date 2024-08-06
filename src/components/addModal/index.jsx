@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // MUI imports
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -89,7 +89,6 @@ const AddPlaceModal = ({
   onClose,
   placeDetails,
   apiKey,
-  fetchPlaces,
 }) => {
   // local states
   const [details, setDetails] = React.useState(initialState);
@@ -141,10 +140,7 @@ const AddPlaceModal = ({
     const newErr = {
       companyName: details.companyName ? "" : "Company name is required",
       address: details.address ? "" : "Address is required",
-      city: details.city ? "" : "City is required",
-      pincode: details.pincode ? "" : "Pincode is required",
-      state: details.state ? "" : "State is required",
-      country: details.country ? "" : "Country is required",
+      link: details.link ? "" : "Map Link is required",
     };
 
     setErr(newErr);
@@ -155,33 +151,18 @@ const AddPlaceModal = ({
     }
     setLoading(true);
     try {
-      const address = `${details.address}, ${details.city}, ${details.state}, ${details.country}`;
-      const response = await axios.get(
-        `https://api.geoapify.com/v1/geocode/search?text=${address}&apiKey=${apiKey}`
-      );
-      if (response.data && response.data.features.length > 0) {
-        const { lat, lon } = response.data.features[0].properties;
-        const newPosition = [lat, lon];
+      const newPosition = clickedPosition;
+      await addDoc(collection(db, "places"), {
+        details: {
+          companyName: details?.companyName,
+          address: details?.address,
+          link: details?.link,
+        },
+        position: newPosition,
+      });
 
-        await addDoc(collection(db, "places"), {
-          details: {
-            companyName: details?.companyName,
-            address: details?.address,
-            city: details?.city,
-            pincode: details?.pincode,
-            state: details?.state,
-            country: details?.country,
-            link: details?.link,
-          },
-          position: newPosition,
-        });
-
-        toast.success("Client Added");
-        fetchPlaces();
-        handleResetFields();
-      } else {
-        toast.error("Location not found");
-      }
+      toast.success("Client Added");
+      handleResetFields();
     } catch (error) {
       console.error("Error adding place to Firestore:", error);
       toast.error("Error adding place to Firestore");
@@ -196,10 +177,7 @@ const AddPlaceModal = ({
     const newErr = {
       companyName: details.companyName ? "" : "Company name is required",
       address: details.address ? "" : "Address is required",
-      city: details.city ? "" : "City is required",
-      pincode: details.pincode ? "" : "Pincode is required",
-      state: details.state ? "" : "State is required",
-      country: details.country ? "" : "Country is required",
+      link: details.link ? "" : "Map Link is required",
     };
 
     setErr(newErr);
@@ -226,17 +204,14 @@ const AddPlaceModal = ({
           details: {
             companyName: details.companyName,
             address: details.address,
-            city: details.city,
-            pincode: details.pincode,
-            state: details.state,
-            country: details.country,
+
             link: details?.link,
           },
           position: newPosition,
         });
 
         toast.success("Client Updated");
-        fetchPlaces();
+        // fetchPlaces();
         handleResetFields();
       } else {
         toast.error("Document not found for the given company name");
@@ -276,7 +251,7 @@ const AddPlaceModal = ({
             }))
           : setDetails({
               companyName: "",
-              address: properties.address_line1 || "",
+              address: "",
               city: properties.city || "",
               pincode: properties.postcode || "",
               state: properties.state || "",
@@ -293,6 +268,18 @@ const AddPlaceModal = ({
       toast.error("Error fetching location details");
     }
   };
+  useEffect(() => {
+    const url = details.link;
+    const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+    const match = url.match(regex);
+
+    if (match) {
+      const latitude = match[1];
+      const longitude = match[2];
+      console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+      setClickedPosition([latitude, longitude]);
+    }
+  }, [details]);
 
   return (
     <Modal
@@ -380,7 +367,7 @@ const AddPlaceModal = ({
             }}
             err={err.address}
           />
-
+          {/* 
           <TextInput
             label="City"
             name="city"
@@ -435,9 +422,9 @@ const AddPlaceModal = ({
               else setErr({ ...err, country: "" });
             }}
             err={err.country}
-          />
+          /> */}
           <TextInput
-            label="Link"
+            label="Map Link"
             name="link"
             value={details.link}
             onChange={(e) => setDetails({ ...details, link: e.target.value })}

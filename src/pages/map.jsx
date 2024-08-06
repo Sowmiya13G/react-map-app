@@ -343,7 +343,7 @@ const Map = () => {
               padding: 1,
               minHeight: "20px",
               maxHeight: "auto",
-              width: "400px",
+              width: "350px",
               overflow: "hidden",
               textOverflow: "ellipsis",
               textAlign: "start",
@@ -351,7 +351,7 @@ const Map = () => {
           >
             <span style={semiBoldStyle}>Address:</span> {address}
           </Typography>
-          <Typography sx={{ padding: 1 }}>
+          {/* <Typography sx={{ padding: 1 }}>
             <span style={semiBoldStyle}>City:</span> {city}
           </Typography>
           <Typography sx={{ padding: 1 }}>
@@ -362,7 +362,7 @@ const Map = () => {
           </Typography>
           <Typography sx={{ padding: 1 }}>
             <span style={semiBoldStyle}>Country:</span> {country}
-          </Typography>
+          </Typography> */}
           <Typography
             sx={{
               padding: 1,
@@ -389,7 +389,7 @@ const Map = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ position: "absolute", right: 0, top: "18%" }}>
+        <Box sx={{ position: "absolute", right: 0, top: "30%" }}>
           <Box sx={buttonContainer}>
             <Box onClick={() => handleEdit()}>
               <EditLocationAltIcon sx={{ color: "blue" }} />
