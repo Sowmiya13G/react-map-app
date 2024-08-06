@@ -178,6 +178,12 @@ const Map = () => {
     setPlaceDetails(selectedPlace.data);
   };
 
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.flyTo(position, 15);
+    }
+  }, [position]);
+
   // ------------------- Custom Styles -----------------------
   const listStyle = {
     fontSize: { xs: "14px", md: "25px" },
@@ -445,6 +451,10 @@ const Map = () => {
         apiKey={apiKey}
         // fetchPlaces={() => fetchPlaces()}
         placeDetails={selectedPlace ? selectedPlace.data : null}
+        updatePosition={(position) => {
+          console.log(position);
+          setPosition(position);
+        }}
       />
 
       <Modal

@@ -84,7 +84,13 @@ const customIcon = L.icon({
 // sample position
 const samplePosition = [21.642491280846862, 78.83925616878989];
 
-const AddPlaceModal = ({ open, onClose, placeDetails, apiKey }) => {
+const AddPlaceModal = ({
+  open,
+  onClose,
+  placeDetails,
+  apiKey,
+  updatePosition = () => {},
+}) => {
   // local states
   const [details, setDetails] = React.useState(initialState);
   const [clickedPosition, setClickedPosition] = React.useState(
@@ -155,7 +161,7 @@ const AddPlaceModal = ({ open, onClose, placeDetails, apiKey }) => {
         },
         position: newPosition,
       });
-
+      updatePosition(newPosition);
       toast.success("Client Added");
       handleResetFields();
     } catch (error) {
@@ -199,12 +205,11 @@ const AddPlaceModal = ({ open, onClose, placeDetails, apiKey }) => {
           details: {
             companyName: details.companyName,
             address: details.address,
-
             link: details?.link,
           },
           position: newPosition,
         });
-
+        updatePosition(newPosition);
         toast.success("Client Updated");
         // fetchPlaces();
         handleResetFields();
