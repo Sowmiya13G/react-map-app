@@ -338,7 +338,17 @@ const Map = () => {
         <Box
           sx={{ display: "flex", alignItems: "start", flexDirection: "column" }}
         >
-          <Typography sx={{ padding: 1 }}>
+          <Typography
+            sx={{
+              padding: 1,
+              minHeight: "20px",
+              maxHeight: "auto",
+              width: "400px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              textAlign: "start",
+            }}
+          >
             <span style={semiBoldStyle}>Address:</span> {address}
           </Typography>
           <Typography sx={{ padding: 1 }}>
@@ -353,13 +363,26 @@ const Map = () => {
           <Typography sx={{ padding: 1 }}>
             <span style={semiBoldStyle}>Country:</span> {country}
           </Typography>
-          <Typography sx={{ padding: 1, display: "flex", flexWrap: "wrap" }}>
+          <Typography
+            sx={{
+              padding: 1,
+              display: "flex",
+
+              width: 400,
+            }}
+          >
             <span style={semiBoldStyle}> Map Link:</span>{" "}
             <a
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "blue" }}
+              style={{
+                color: "blue",
+                width: "300px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                height: "20px",
+              }}
             >
               {link}
             </a>
